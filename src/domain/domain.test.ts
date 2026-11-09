@@ -1,0 +1,5 @@
+import { describe,it,expect } from 'vitest'; import { node,insert,size,height } from './tree'; import { traversalOrder } from './traversals'; import { mastery } from '../application/assessment';
+const t=node('a',2,node('b',1),node('c',3));
+describe('tree operations',()=>{it('preserves nodes on insertion',()=>{const x=insert(t,4);expect(size(x)).toBe(4);expect(size(t)).toBe(3)});it('handles single branches',()=>expect(height(node('a',1,node('b',2)))).toBe(2))});
+describe('traversals',()=>{it('provides standard sample orders',()=>{expect(traversalOrder(t,'preorder').map(n=>n.value)).toEqual([2,1,3]);expect(traversalOrder(t,'inorder').map(n=>n.value)).toEqual([1,2,3]);expect(traversalOrder(t,'postorder').map(n=>n.value)).toEqual([1,3,2]);expect(traversalOrder(t,'levelorder').map(n=>n.value)).toEqual([2,1,3])});it('allows empty trees',()=>expect(traversalOrder(undefined,'inorder')).toEqual([]))});
+describe('mastery',()=>it('calculates percent and weak topic',()=>expect(mastery([{questionId:'a',correct:true,topic:'terms'},{questionId:'b',correct:false,topic:'bst'}])).toMatchObject({percent:50,weakest:'bst'})));

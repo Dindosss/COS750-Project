@@ -1,0 +1,3 @@
+export type Topic = 'structure'|'terms'|'traversal'|'bst';
+export interface Answer { questionId:string; correct:boolean; topic:Topic }
+export const mastery = (answers:Answer[]) => { const count=answers.length; const correct=answers.filter(a=>a.correct).length; const byTopic = (['structure','terms','traversal','bst'] as Topic[]).map(topic=>({topic, score: answers.filter(a=>a.topic===topic && a.correct).length, total:answers.filter(a=>a.topic===topic).length})); return {percent:count?Math.round(correct/count*100):0, correct,count,byTopic, weakest:byTopic.filter(x=>x.total).sort((a,b)=>a.score/a.total-b.score/b.total)[0]?.topic}; };
