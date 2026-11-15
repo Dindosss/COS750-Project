@@ -14,6 +14,11 @@ const examples = {
   empty: { label: 'Empty tree', values: [], value: 8 },
 } satisfies Record<string, { label: string; values?: number[]; value?: number }>;
 type Example = keyof typeof examples;
+const containsValue = (root: TreeNode | undefined, value: number): boolean => {
+  if (!root) return false;
+  if (root.value === value) return true;
+  return containsValue(value < root.value ? root.left : root.right, value);
+};
 
 export function OperationVisualiser({ kind, initialRoot }: { kind: OperationKind; initialRoot?: TreeNode }) {
   const [example, setExample] = useState<Example>('sample');
@@ -39,6 +44,7 @@ export function OperationVisualiser({ kind, initialRoot }: { kind: OperationKind
       e.preventDefault();
       const next = Number(input);
       if (!input.trim() || !Number.isSafeInteger(next) || Math.abs(next) > 999) { setError('Enter a whole number from -999 to 999.'); return; }
+      if (kind === 'delete' && !containsValue(root, next)) { setError(`${next} is not in this tree, so it cannot be deleted.`); reset(); return; }
       setValue(next); setError(''); reset();
     }}>
       <label>Starting tree<select value={example} onChange={e => {
@@ -57,7 +63,6 @@ export function OperationVisualiser({ kind, initialRoot }: { kind: OperationKind
           setValue(nextValue); setError(''); reset();
         }
       }} /></label>
-      <button type="submit">Show steps</button>
     </form>
     {error && <p role="alert" className="operation-error">{error}</p>}
     <div className="step-status"><span>{kind === 'insert' ? 'INSERT' : 'DELETE'} {value}</span><span>Step {index + 1} of {steps.length} · {step.phase}</span></div>

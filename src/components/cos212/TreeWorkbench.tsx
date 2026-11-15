@@ -20,7 +20,6 @@ const run = (root: TreeNode | undefined, kind: 'insert' | 'delete', value: numbe
 export function TreeWorkbench() {
   const [root, setRoot] = useState<TreeNode | undefined>();
   const [selected, setSelected] = useState(() => root?.id);
-  const [dragAction, setDragAction] = useState<'insert' | 'delete'>();
   const [input, setInput] = useState('');
   const [message, setMessage] = useState('Drag the green value into the insert zone, or drag your selected node into the delete zone.');
   const selectedNode = findNode(root, selected ?? '');
@@ -48,12 +47,8 @@ export function TreeWorkbench() {
     <p className="operation-intro">Start with an empty tree and build your own BST. Add as many unique whole numbers as you want, then select and delete nodes to see how the links adjust.</p>
     <div className="workbench-actions">
       <label className="workbench-number">Value to insert <input type="number" min="-999" max="999" step="1" placeholder={String(suggestedValue)} value={input} onChange={event => setInput(event.target.value)} /></label>
-      <div className="drag-token insert-token" draggable onDragStart={event => { event.dataTransfer.setData('bst-action', 'insert'); setDragAction('insert'); }} onDragEnd={() => setDragAction(undefined)} onClick={insert} role="button" tabIndex={0} onKeyDown={event => event.key === 'Enter' && insert()}>Drag {insertValue} to insert</div>
-      <div className="drop-zone insert-zone" onDragOver={event => event.preventDefault()} onDrop={event => { event.preventDefault(); if (dragAction === 'insert' || event.dataTransfer.getData('bst-action') === 'insert') insert(); setDragAction(undefined); }}>Drop to insert</div>
       <button onClick={insert}>Insert {insertValue}</button>
-      <div className={`drag-token delete-token ${selectedNode ? '' : 'disabled'}`} draggable={Boolean(selectedNode)} onDragStart={event => { event.dataTransfer.setData('bst-action', 'delete'); setDragAction('delete'); }} onDragEnd={() => setDragAction(undefined)} role="button" tabIndex={0} onKeyDown={event => event.key === 'Enter' && remove()}>Drag {selectedNode?.value ?? 'a node'} to delete</div>
-      <div className="drop-zone delete-zone" onDragOver={event => event.preventDefault()} onDrop={event => { event.preventDefault(); if (dragAction === 'delete' || event.dataTransfer.getData('bst-action') === 'delete') remove(); setDragAction(undefined); }}>Drop to delete</div>
-      <button onClick={remove} disabled={!selectedNode}>Delete selected</button>
+      <button onClick={remove} disabled={!selectedNode}>Delete {selectedNode?.value ?? 'selected node'}</button>
       <button onClick={clear}>Clear tree</button>
       <button onClick={loadExample}>Load example</button>
     </div>
