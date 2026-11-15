@@ -1,6 +1,7 @@
 import { operationQuestions } from './operationQuestions';
 import type { Topic } from '../application/assessment';
-export interface Question { id:string; topic:Topic; prompt:string; options:string[]; answer:number; hint:string[]; explain:string; misconception:string }
+import type { LearningObjectiveId } from './learningObjectives';
+export interface Question { id:string; topic:Topic; objectiveId?:LearningObjectiveId; prompt:string; options:string[]; answer:number; hint:string[]; explain:string; misconception:string }
 const make = (id:string,topic:Topic,prompt:string,options:string[],answer:number,explain:string):Question => ({id,topic,prompt,options,answer,hint:['Look at the word in the question.','Sketch a tiny root with two child positions.','Eliminate choices that contradict the BST or traversal rule.'],explain,misconception:'A common mix-up is treating a tree like a list: position and parent-child links matter.'});
 export const questions:Question[] = [...operationQuestions,
 make('q1','terms','What is the topmost node called?',['Leaf','Root','Edge','Subtree'],1,'The root is the single starting node.'),
