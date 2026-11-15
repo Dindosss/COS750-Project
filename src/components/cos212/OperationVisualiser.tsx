@@ -45,9 +45,18 @@ export function OperationVisualiser({ kind }: { kind: OperationKind }) {
         const key = e.target.value as Example;
         setExample(key); reset(); setError('');
         const preset = examples[key];
-        if ('value' in preset) { setInput(String(preset.value)); setValue(preset.value); }
+        // Insertions into an empty tree may use any learner-entered value.
+        // Deletion examples retain their preset target value.
+        if (kind === 'delete' && 'value' in preset) { setInput(String(preset.value)); setValue(preset.value); }
       }}>{Object.entries(examples).filter(([key]) => kind === 'delete' || ['sample', 'single', 'empty'].includes(key)).map(([key, preset]) => <option key={key} value={key}>{preset.label}</option>)}</select></label>
-      <label>Value to {kind}<input type="number" min="-999" max="999" step="1" value={input} onChange={e => setInput(e.target.value)} /></label>
+      <label>Value to {kind}<input type="number" min="-999" max="999" step="1" value={input} onChange={e => {
+        const nextInput = e.target.value;
+        setInput(nextInput);
+        const nextValue = Number(nextInput);
+        if (nextInput.trim() && Number.isSafeInteger(nextValue) && Math.abs(nextValue) <= 999) {
+          setValue(nextValue); setError(''); reset();
+        }
+      }} /></label>
       <button type="submit">Show steps</button>
     </form>
     {error && <p role="alert" className="operation-error">{error}</p>}
