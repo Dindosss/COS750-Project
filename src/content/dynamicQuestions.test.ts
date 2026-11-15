@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createDynamicAssessment } from './dynamicQuestions';
+import { learningObjectives } from './learningObjectives';
 
 describe('dynamic assessments', () => {
   it('creates answerable questions for each difficulty level', () => {
@@ -12,5 +13,11 @@ describe('dynamic assessments', () => {
         expect(question.options[question.answer]).toBeTruthy();
       }
     }
+  });
+
+  it('aligns every learning objective to the challenge check-in', () => {
+    const assessment = createDynamicAssessment(3);
+    const assessed = new Set(assessment.questions.map(question => question.objectiveId));
+    expect(learningObjectives.every(objective => assessed.has(objective.id))).toBe(true);
   });
 });
