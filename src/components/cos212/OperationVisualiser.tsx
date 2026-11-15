@@ -1,5 +1,5 @@
 ﻿import { useEffect, useMemo, useState } from 'react';
-import { sampleTree } from '../../domain/tree';
+import { sampleTree, type TreeNode } from '../../domain/tree';
 import { treeFromValues } from '../../domain/generator';
 import { operationPseudo, operationSteps, type OperationKind } from '../../domain/operations';
 import { TreeCanvas } from './TreeCanvas';
@@ -15,7 +15,7 @@ const examples = {
 } satisfies Record<string, { label: string; values?: number[]; value?: number }>;
 type Example = keyof typeof examples;
 
-export function OperationVisualiser({ kind }: { kind: OperationKind }) {
+export function OperationVisualiser({ kind, initialRoot }: { kind: OperationKind; initialRoot?: TreeNode }) {
   const [example, setExample] = useState<Example>('sample');
   const [input, setInput] = useState(kind === 'insert' ? '5' : '8');
   const [value, setValue] = useState(kind === 'insert' ? 5 : 8);
@@ -23,7 +23,7 @@ export function OperationVisualiser({ kind }: { kind: OperationKind }) {
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(700);
   const [error, setError] = useState('');
-  const root = useMemo(() => example === 'sample' ? sampleTree() : treeFromValues(examples[example].values ?? []), [example]);
+  const root = useMemo(() => example === 'sample' ? initialRoot ?? sampleTree() : treeFromValues(examples[example].values ?? []), [example, initialRoot]);
   const steps = useMemo(() => operationSteps(root, kind, value), [root, kind, value]);
   const step = steps[index];
   useEffect(() => {
