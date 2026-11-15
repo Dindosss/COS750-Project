@@ -17,16 +17,15 @@ export default function App() {
   const [score, setScore] = useState(() => load('cos212-score', 0));
   const [lessonTree, setLessonTree] = useState(() => randomTree(7)!);
   const [selected, setSelected] = useState(() => lessonTree.id);
-  const [large, setLarge] = useState(() => load('cos212-large', false));
-  useEffect(() => { save('cos212-stage', stage); save('cos212-done', done); save('cos212-score', score); save('cos212-large', large); }, [stage, done, score, large]);
+  useEffect(() => { save('cos212-stage', stage); save('cos212-done', done); save('cos212-score', score); }, [stage, done, score]);
   const go = (nextStage: StageId) => { setStage(nextStage); if (!done.includes(nextStage)) setDone([...done, nextStage]); };
   const current = stages.findIndex(item => item.id === stage);
   const next = () => go(stages[Math.min(4, current + 1)].id);
   const node = findNode(lessonTree, selected);
   const refreshLesson = () => { const nextTree = randomTree(7)!; setLessonTree(nextTree); setSelected(nextTree.id); };
 
-  return <main className={large ? 'large-text' : ''}>
-    <header><a className="brand" href="#top"><span>⌘</span>COS212 <em>Binary trees</em></a><div className="settings"><button onClick={() => setLarge(!large)} aria-pressed={large}>A<span>A</span></button><span className="privacy">saved only on this device</span></div></header>
+  return <main>
+    <header><a className="brand" href="#top"><span>⌘</span>COS212 <em>Binary trees</em></a></header>
     <nav aria-label="Learning stages">{stages.map(item => <button key={item.id} onClick={() => done.includes(item.id) && go(item.id)} disabled={!done.includes(item.id) && item.id !== stage} className={stage === item.id ? 'here' : done.includes(item.id) ? 'done' : ''}><small>{item.kicker}</small>{item.label}</button>)}</nav>
     <div id="top" className="page">
       {stage === 'welcome' && <section className="hero"><div><p className="eyebrow">SELF-PACED MINI COURSE</p><h1>Binary trees,<br /><mark>made tangible.</mark></h1><p className="lead">Learn to read, build and traverse a binary search tree—one clean visual step at a time.</p><button className="primary" onClick={next}>Begin the tutor <b>→</b></button><p className="time">About 25 minutes · Your progress stays here</p></div><div className="hero-art"><span>ROOT</span><div className="root-dot">8</div><i className="line l1" /><i className="line l2" /><div className="leaf one">3</div><div className="leaf two">10</div><b>at most<br />two children</b></div></section>}
